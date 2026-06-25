@@ -24,12 +24,21 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   Set<Muscle>? selectedMuscles;
+  Gender _gender = Gender.male;
   final GlobalKey<MusclePickerMapState> _mapKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: SegmentedButton<Gender>(
+          segments: const [
+            ButtonSegment(value: Gender.male, label: Text('Male')),
+            ButtonSegment(value: Gender.female, label: Text('Female')),
+          ],
+          selected: {_gender},
+          onSelectionChanged: (s) => setState(() => _gender = s.first),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.delete, color: Colors.red),
@@ -57,7 +66,7 @@ class _HomeViewState extends State<HomeView> {
                   key: _mapKey,
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
-                  map: Maps.BODY,
+                  gender: _gender,
                   isEditing: false,
                   initialSelectedGroups: const ['chest', 'glutes', 'neck', 'lower_back'],
                   onChanged: (muscles) {

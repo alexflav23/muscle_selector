@@ -44,6 +44,7 @@ class Parser {
   }
 
   Future<List<Muscle>> svgToMuscleList(String body) async {
+    sizeController.reset();
     final svgMuscle = await rootBundle.loadString('${Constants.ASSETS_PATH}/$body');
     List<Muscle> muscleList = [];
 
