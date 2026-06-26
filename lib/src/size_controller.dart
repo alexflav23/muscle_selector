@@ -30,6 +30,15 @@ class SizeController {
     calculateArea();
   }
 
+  void reset() {
+    _mapArea
+      ..minX = null
+      ..maxX = null
+      ..minY = null
+      ..maxY = null;
+    mapSize = Size.zero;
+  }
+
   void calculateArea() {
     if (_mapArea.anyEmpty) mapSize = Size.zero;
 

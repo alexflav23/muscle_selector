@@ -7,7 +7,8 @@ import '../size_controller.dart';
 class MusclePickerMap extends StatefulWidget {
   final double? width;
   final double? height;
-  final String map;
+  final String? map;
+  final Gender? gender;
   final Function(Set<Muscle> muscles) onChanged;
   final Color? strokeColor;
   final Color? selectedColor;
@@ -19,8 +20,9 @@ class MusclePickerMap extends StatefulWidget {
 
   const MusclePickerMap({
     Key? key,
-    required this.map,
     required this.onChanged,
+    this.map,
+    this.gender,
     this.width,
     this.height,
     this.strokeColor,
@@ -30,7 +32,11 @@ class MusclePickerMap extends StatefulWidget {
     this.isEditing = false,
     this.initialSelectedMuscles,
     this.initialSelectedGroups
-  }) : super(key: key);
+  })  : assert(map != null || gender != null,
+            'Provide either a map asset or a gender'),
+        super(key: key);
+
+  String get resolvedMap => map ?? Maps.forGender(gender ?? Gender.male);
 
   @override
   MusclePickerMapState createState() => MusclePickerMapState();
@@ -51,8 +57,16 @@ class MusclePickerMapState extends State<MusclePickerMap> {
     });
   }
 
+  @override
+  void didUpdateWidget(covariant MusclePickerMap oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.resolvedMap != widget.resolvedMap) {
+      _loadMuscleList();
+    }
+  }
+
   _loadMuscleList() async {
-    final list = await Parser.instance.svgToMuscleList(widget.map);
+    final list = await Parser.instance.svgToMuscleList(widget.resolvedMap);
     _muscleList.clear();
     setState(() {
       _muscleList.addAll(list);
