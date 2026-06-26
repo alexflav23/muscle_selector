@@ -50,7 +50,7 @@ Tick a region once it matches the reference. ids come straight from
 `lib/src/parser.dart` (`muscleGroups`).
 
 ### Anterior figure (left)
-- [ ] chest — `chest1`, `chest2`  · pectorals; female chest sits over the pec, keep the pec region
+- [ ] chest — `chest1`, `chest2`  · now drawn as breasts (the chest group sits over the pec); refine the breast contour over the reference
 - [ ] shoulders (front delts) — `shoulder1`, `shoulder2`  · narrower than male
 - [ ] biceps — `biceps1`, `biceps2`
 - [ ] forearms (front) — `forearm1`, `forearm2`
@@ -77,10 +77,16 @@ Tick a region once it matches the reference. ids come straight from
 ### Silhouette
 - [ ] `human_body` — body outline for BOTH figures (one path, two contours). Not
       selectable; widen hips / narrow shoulders / slim neck so muscles sit inside it.
-      The head/hair is just a blob here — feminise it if you like, it carries no muscle.
+      The head now carries line-art feminine hair (added by the derive script); it
+      carries no muscle, so restyle it freely.
 
 ## How the scaffold was derived
-`tracing/derive_female_scaffold.py` warps the male map: a horizontal scale that varies
-with height (narrow shoulders → pinched waist → wide hips/pelvis), applied about each
-figure's vertical axis. It only moves `x` by `y`, so ids and vertical registration are
-untouched. Re-run it to regenerate the scaffold from a fresh `human_body.svg`.
+`tracing/derive_female_scaffold.py` builds the female map from the male one in three
+stages: (1) a 2D horizontal warp about each figure's vertical axis — a global `SLIM(y)`
+pulls in the broad male shoulders and slims the limbs, a `BOOST(y)` adds the waist pinch
+and hip/pelvis flare, faded out with distance-from-axis (`CORE_OUT..LIMB`) so the hands
+never flare with the hips; (2) breast shapes replace the flat male pecs (`chest1`/`chest2`);
+(3) line-art feminine hair replaces the male hairstyle inside `human_body`. Stages 2–3
+reshape geometry inside existing paths only — no id is renamed/added/removed — and the
+warp moves only `x`, so ids and vertical registration are untouched. Re-run it to
+regenerate the scaffold from a fresh `human_body.svg` (needs `pip install svgpathtools cairosvg`).

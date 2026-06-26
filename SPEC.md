@@ -74,16 +74,27 @@ Plus `human_body` — the silhouette outline, **not selectable**.
 
 ## 4. The female muscle selector (1.1.0)
 
-The female `d=""` geometry was **derived from the male map** by an anatomical
-proportional warp — a horizontal scale that varies with height (narrow shoulders →
-pinched waist → wide hips/pelvis), applied about each figure's vertical axis. Only
-`x` is moved as a function of `y`, so **all 52 ids and the vertical registration are
-preserved** (F7–F9). An AI-generated female anatomy chart was used to calibrate the
-proportions and ships as the refinement reference.
+The female `d=""` geometry was **derived from the male map** by `tracing/derive_female_scaffold.py`
+in three reproducible stages:
 
-**Fidelity note:** the derived map is a correct, fully-tappable *scaffold*, not a
-finished anatomical illustration — it inherits the source's muscle definition. For
-publication-grade art, hand-trace the named paths over the reference; see
+1. **Proportional warp** about each figure's vertical axis — a global slim (narrow
+   shoulders, slimmer limbs) plus a core-only sculpt (pinched waist → wide hips/pelvis)
+   that fades out with distance-from-axis so the hands never flare with the hips. Moves
+   only `x` (as a function of `x` and `y`), preserving vertical registration.
+2. **Breasts** — the flat male pectorals `chest1`/`chest2` are replaced with breast
+   shapes (still the *chest* group: tapping a breast selects chest).
+3. **Feminine hair** — the male hairstyle is swapped for line-art hair (forehead
+   hairline + side-framing locks on the front, a fuller mass on the back), drawn in the
+   same thin-band style as the rest of the silhouette.
+
+Every stage reshapes geometry **inside existing paths only** — no id/title/class is
+renamed, added, or removed — so **all 52 ids and the registration are preserved** (F7–F9).
+An AI-generated female anatomy chart was used to calibrate the proportions and ships as
+the refinement reference.
+
+**Fidelity note:** the result is a clearly-female, fully-tappable *scaffold*, not a
+finished anatomical illustration — the muscle borders are still inherited from the source.
+For publication-grade art, hand-trace the named paths over the reference; see
 [`tracing/TRACING.md`](tracing/TRACING.md). Anything edited there must still pass:
 
 ```
