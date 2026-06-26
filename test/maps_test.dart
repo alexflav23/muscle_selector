@@ -24,12 +24,13 @@ void main() {
   });
 
   group('Maps.imageForMap', () {
-    test('the female map has a companion illustration', () {
+    test('both maps have a companion illustration', () {
       expect(Maps.imageForMap(Maps.BODY_FEMALE), 'human_body_female.png');
+      expect(Maps.imageForMap(Maps.BODY), 'human_body.png');
     });
 
-    test('the male map is a plain vector map (no image)', () {
-      expect(Maps.imageForMap(Maps.BODY), isNull);
+    test('an unknown map has no image', () {
+      expect(Maps.imageForMap('something_else.svg'), isNull);
     });
   });
 }

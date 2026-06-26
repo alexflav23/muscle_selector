@@ -20,10 +20,10 @@ from PIL import Image
 from svgpathtools import parse_path, Path, Line, QuadraticBezier, CubicBezier, Arc
 
 GENDER = sys.argv[1] if len(sys.argv) > 1 else 'female'
-SRC_SVG = f'assets/maps/human_body_{GENDER}.svg' if GENDER == 'female' else 'assets/maps/human_body.svg'
+SRC_SVG = 'assets/maps/human_body_female.svg' if GENDER == 'female' else 'assets/maps/human_body.svg'
 IMG = f'tracing/raster/{GENDER}_source_2k.png'
-OUT_SVG = f'assets/maps/human_body_{GENDER}.svg'
-OUT_PNG = f'assets/maps/human_body_{GENDER}.png'
+OUT_SVG = SRC_SVG                                   # overwrite the source map
+OUT_PNG = SRC_SVG.replace('.svg', '.png')           # sibling illustration asset
 MIDX = 171.6   # x that splits the front (left) and back (right) figure
 
 img = np.array(Image.open(IMG).convert('L')); H, W = img.shape; body = img < 235
