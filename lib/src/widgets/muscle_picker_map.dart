@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:muscle_selector/muscle_selector.dart';
 import 'package:muscle_selector/src/widgets/muscle_painter.dart';
-import '../parser.dart';
 import '../size_controller.dart';
 
 class MusclePickerMap extends StatefulWidget {
@@ -89,7 +88,29 @@ class MusclePickerMapState extends State<MusclePickerMap> {
     setState(() {
       selectedMuscles.clear();
     });
+    widget.onChanged.call(selectedMuscles);
   }
+
+  /// Highlight whole muscle groups (e.g. `['chest', 'glutes']`) programmatically.
+  void selectGroups(List<String> groupKeys) {
+    final muscles = Parser.instance.getMusclesByGroups(groupKeys, _muscleList);
+    setState(() => selectedMuscles.addAll(muscles));
+    widget.onChanged.call(selectedMuscles);
+  }
+
+  /// Clear the highlight from whole muscle groups.
+  void deselectGroups(List<String> groupKeys) {
+    final muscles = Parser.instance.getMusclesByGroups(groupKeys, _muscleList);
+    setState(() => selectedMuscles.removeAll(muscles));
+    widget.onChanged.call(selectedMuscles);
+  }
+
+  /// The group keys (from [Parser.muscleGroups]) currently highlighted.
+  Set<String> get selectedGroups => {
+        for (final muscle in selectedMuscles)
+          for (final entry in Parser.muscleGroups.entries)
+            if (entry.value.contains(muscle.id)) entry.key,
+      };
 
   @override
   Widget build(BuildContext context) {

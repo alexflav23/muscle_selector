@@ -49,12 +49,20 @@ MusclePickerMap(
   },
 );
 
-// clear programmatically
+// highlight / clear muscle groups programmatically (e.g. from your own buttons)
+mapKey.currentState?.selectGroups(['chest', 'glutes']);
+mapKey.currentState?.deselectGroups(['glutes']);
 mapKey.currentState?.clearSelect();
+
+// which groups are currently highlighted
+final Set<String> groups = mapKey.currentState?.selectedGroups ?? {};
+// the group keys themselves live in Parser.muscleGroups
 ```
 
 Switching `gender` (or `map`) on a mounted widget reloads the body automatically.
-See the [`example/`](example/lib/main.dart) app for a Male/Female toggle.
+The [`example/`](example/lib/main.dart) app is a full demo: a Male/Female toggle, the
+interactive body, and a chip panel that highlights muscle groups in two-way sync with
+the body — with the highlight carried by group key so it survives a gender switch.
 
 ### `MusclePickerMap` properties
 
@@ -71,6 +79,15 @@ See the [`example/`](example/lib/main.dart) app for a Male/Female toggle.
 | `selectedColor` / `strokeColor` / `dotColor` | `Color?` | styling |
 
 > Provide **either** `gender` or `map` (asserted at construction).
+
+### `MusclePickerMapState` methods (via the `GlobalKey`)
+
+| method | notes |
+|--------|-------|
+| `selectGroups(List<String> keys)` | highlight whole muscle groups |
+| `deselectGroups(List<String> keys)` | clear the highlight from groups |
+| `clearSelect()` | clear the whole selection |
+| `selectedGroups` | `Set<String>` of currently highlighted group keys |
 
 The muscle group / id catalogue and the full feature list are in [`SPEC.md`](SPEC.md).
 

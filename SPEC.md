@@ -71,6 +71,8 @@ Plus `human_body` — the silhouette outline, **not selectable**.
 | F15 | `human_body` silhouette is not selectable | `test/muscle_picker_map_test.dart` |
 | F16 | Switching `gender` reloads a different map | `test/muscle_picker_map_test.dart` |
 | F17 | Example app shows the Male/Female toggle + picker; switching doesn't error | `example/test/widget_test.dart` |
+| F18 | Example group chips highlight muscles, stay in two-way sync, and the highlight survives a gender switch | `example/test/widget_test.dart` |
+| F19 | `selectGroups` / `deselectGroups` / `selectedGroups` drive & report highlighting | `test/muscle_picker_map_test.dart` |
 
 ## 4. The female muscle selector (1.1.0)
 

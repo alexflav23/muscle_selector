@@ -69,6 +69,34 @@ void main() {
     expect(key.currentState!.selectedMuscles, isEmpty);
   });
 
+  testWidgets('selectGroups / deselectGroups / selectedGroups drive highlighting',
+      (tester) async {
+    mockMuscleAssets(tester);
+    final key = GlobalKey<MusclePickerMapState>();
+    Set<Muscle>? changed;
+
+    await tester.pumpWidget(_host(MusclePickerMap(
+      key: key,
+      width: 200,
+      height: 300,
+      gender: Gender.male,
+      onChanged: (m) => changed = m,
+    )));
+    await tester.pumpAndSettle();
+    expect(key.currentState!.selectedGroups, isEmpty);
+
+    key.currentState!.selectGroups(['chest', 'neck']);
+    await tester.pump();
+    expect(_selectedIds(key), containsAll(<String>['chest1', 'chest2', 'neck']));
+    expect(key.currentState!.selectedGroups, <String>{'chest', 'neck'});
+    expect(changed, isNotNull); // selection changes are reported back
+
+    key.currentState!.deselectGroups(['chest']);
+    await tester.pump();
+    expect(_selectedIds(key), <String>{'neck'});
+    expect(key.currentState!.selectedGroups, <String>{'neck'});
+  });
+
   testWidgets('tapping a muscle selects its whole group; toggle deselects',
       (tester) async {
     // full-area chest1 last in document -> topmost -> a centre tap lands on it

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:muscle_selector/muscle_selector.dart';
@@ -23,6 +24,7 @@ void main() {
       return ByteData.view(bytes.buffer);
     });
     addTearDown(() => messenger.setMockMessageHandler('flutter/assets', null));
+    rootBundle.clear(); // serve fresh from our mock handler (see second test)
 
     await tester.pumpWidget(MyApp());
     await tester.pumpAndSettle();
@@ -35,5 +37,48 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('group chips highlight muscles, stay in sync, and survive a '
+      'gender switch', (tester) async {
+    final messenger = tester.binding.defaultBinaryMessenger;
+    messenger.setMockMessageHandler('flutter/assets', (ByteData? message) async {
+      final bytes = Uint8List.fromList(utf8.encode(_fixture));
+      return ByteData.view(bytes.buffer);
+    });
+    addTearDown(() => messenger.setMockMessageHandler('flutter/assets', null));
+    // rootBundle caches strings across tests; a cached SynchronousFuture stalls
+    // under fake-async, so clear it and let our mock handler serve fresh.
+    rootBundle.clear();
+
+    bool chipSelected(String label) => tester
+        .widgetList<FilterChip>(find.byType(FilterChip))
+        .firstWhere((c) => (c.label as Text).data == label)
+        .selected;
+
+    await tester.pumpWidget(MyApp());
+    await tester.pumpAndSettle();
+
+    // The panel lists every group as a chip; Chest/Neck are seeded on.
+    expect(find.widgetWithText(FilterChip, 'Chest'), findsOneWidget);
+    expect(find.widgetWithText(FilterChip, 'Hamstrings'), findsOneWidget);
+    expect(chipSelected('Chest'), isTrue);
+    expect(chipSelected('Neck'), isTrue);
+
+    // Tapping a selected chip clears that group's highlight (chip <-> body sync).
+    await tester.tap(find.text('Chest'));
+    await tester.pumpAndSettle();
+    expect(chipSelected('Chest'), isFalse);
+    expect(chipSelected('Neck'), isTrue);
+
+    // Re-highlight, then flip gender: the highlight is re-seeded on reload.
+    await tester.tap(find.text('Chest'));
+    await tester.pumpAndSettle();
+    expect(chipSelected('Chest'), isTrue);
+
+    await tester.tap(find.text('Female'));
+    await tester.pumpAndSettle(); // reloads the body and re-seeds the highlight
+    expect(tester.takeException(), isNull);
+    expect(chipSelected('Chest'), isTrue);
   });
 }
