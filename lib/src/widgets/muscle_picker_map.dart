@@ -120,33 +120,38 @@ class MusclePickerMapState extends State<MusclePickerMap> {
   @override
   Widget build(BuildContext context) {
     final image = _imageAsset;
+    final size = mapSize;
+    if (image != null && size != null && size != Size.zero) {
+      // Overlay mode: the illustration and the (transparent) hit/highlight paths
+      // live in one mapSize box and are scaled together by the FittedBox, so the
+      // tints line up with the image exactly regardless of the available space.
+      return Center(
+        child: FittedBox(
+          fit: BoxFit.contain,
+          child: SizedBox(
+            width: size.width,
+            height: size.height,
+            child: Stack(
+              children: [
+                Image.asset(
+                  '${Constants.ASSETS_PATH}/$image',
+                  width: size.width,
+                  height: size.height,
+                  fit: BoxFit.fill,
+                  errorBuilder: (context, error, stack) =>
+                      const SizedBox.shrink(),
+                ),
+                for (var muscle in _muscleList) _buildStackItem(muscle, true),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
     return Stack(
       children: [
-        if (image != null) _buildImageLayer(image),
-        for (var muscle in _muscleList) _buildStackItem(muscle, image != null),
+        for (var muscle in _muscleList) _buildStackItem(muscle, false),
       ],
-    );
-  }
-
-  BoxConstraints get _mapConstraints => BoxConstraints(
-        maxWidth: mapSize?.width ?? 0,
-        maxHeight: mapSize?.height ?? 0,
-      );
-
-  Widget _buildImageLayer(String imageName) {
-    return Container(
-      width: widget.width ?? double.infinity,
-      height: widget.height ?? double.infinity,
-      constraints: _mapConstraints,
-      alignment: Alignment.center,
-      child: Image.asset(
-        '${Constants.ASSETS_PATH}/$imageName',
-        fit: BoxFit.fill,
-        width: mapSize?.width,
-        height: mapSize?.height,
-        // Degrade to the plain hit-map if the illustration can't be loaded.
-        errorBuilder: (context, error, stack) => const SizedBox.shrink(),
-      ),
     );
   }
 
@@ -171,12 +176,19 @@ class MusclePickerMapState extends State<MusclePickerMap> {
           strokeColor: widget.strokeColor,
           overlay: overlay,
         ),
-        child: Container(
-          width: widget.width ?? double.infinity,
-          height: widget.height ?? double.infinity,
-          constraints: _mapConstraints,
-          alignment: Alignment.center,
-        ),
+        // In overlay mode the canvas is exactly mapSize (so the painter's scale
+        // is 1 and paths sit in image-pixel space); otherwise fill the widget.
+        child: overlay
+            ? SizedBox(width: mapSize?.width, height: mapSize?.height)
+            : Container(
+                width: widget.width ?? double.infinity,
+                height: widget.height ?? double.infinity,
+                constraints: BoxConstraints(
+                  maxWidth: mapSize?.width ?? 0,
+                  maxHeight: mapSize?.height ?? 0,
+                ),
+                alignment: Alignment.center,
+              ),
       ),
     );
   }
