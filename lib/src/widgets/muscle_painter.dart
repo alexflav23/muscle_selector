@@ -9,6 +9,10 @@ class MusclePainter extends CustomPainter {
   final Color? selectedColor;
   final Color? dotColor;
 
+  /// When true the map is rendered over a background illustration: muscles are
+  /// invisible until selected, and a selection is drawn as a translucent tint.
+  final bool overlay;
+
   final sizeController = SizeController.instance;
 
   double _scale = 1.0;
@@ -19,10 +23,31 @@ class MusclePainter extends CustomPainter {
     this.selectedColor,
     this.strokeColor,
     this.dotColor,
+    this.overlay = false,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
+    _scale = sizeController.calculateScale(size);
+    canvas.scale(_scale);
+
+    final isSelected =
+        selectedMuscles.any((selected) => selected.id == muscle.id);
+
+    if (overlay) {
+      // The illustration carries the muscle outlines; only tint a selection.
+      if (muscle.id == 'human_body') return;
+      if (isSelected) {
+        canvas.drawPath(
+          muscle.path,
+          Paint()
+            ..color = (selectedColor ?? Colors.blue).withOpacity(0.45)
+            ..style = PaintingStyle.fill,
+        );
+      }
+      return;
+    }
+
     final pen = Paint()
       ..color = strokeColor ?? Colors.white60
       ..strokeWidth = 1.0
@@ -33,10 +58,7 @@ class MusclePainter extends CustomPainter {
       ..strokeWidth = 1.0
       ..style = PaintingStyle.fill;
 
-    _scale = sizeController.calculateScale(size);
-    canvas.scale(_scale);
-
-    if (selectedMuscles.any((selected) => selected.id == muscle.id)) {
+    if (isSelected) {
       canvas.drawPath(muscle.path, selectedPen);
     }
 

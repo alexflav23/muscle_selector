@@ -22,4 +22,14 @@ void main() {
   test('Gender has exactly male and female', () {
     expect(Gender.values, [Gender.male, Gender.female]);
   });
+
+  group('Maps.imageForMap', () {
+    test('the female map has a companion illustration', () {
+      expect(Maps.imageForMap(Maps.BODY_FEMALE), 'human_body_female.png');
+    });
+
+    test('the male map is a plain vector map (no image)', () {
+      expect(Maps.imageForMap(Maps.BODY), isNull);
+    });
+  });
 }

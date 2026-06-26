@@ -76,34 +76,26 @@ Plus `human_body` — the silhouette outline, **not selectable**.
 
 ## 4. The female muscle selector (1.1.0)
 
-The female `d=""` geometry was **derived from the male map** by `tracing/derive_female_scaffold.py`
-in three reproducible stages:
+The female map ships as a **rendered illustration** (`assets/maps/human_body_female.png`)
+with the 52 named paths (`human_body_female.svg`) overlaid as an **invisible hit /
+highlight layer**: the widget draws the image and tints only the selected muscles
+(`MusclePainter` `overlay` mode, switched on by `Maps.imageForMap`). This gives an
+illustrated, premium look while every muscle stays tappable.
 
-1. **Proportional warp** about each figure's vertical axis — a global slim (narrow
-   shoulders, slimmer limbs) plus a core-only sculpt (pinched waist → wide hips/pelvis)
-   that fades out with distance-from-axis so the hands never flare with the hips. Moves
-   only `x` (as a function of `x` and `y`), preserving vertical registration.
-2. **Breasts** — the flat male pectorals `chest1`/`chest2` are replaced with breast
-   shapes (still the *chest* group: tapping a breast selects chest).
-3. **Feminine hair** — the male hairstyle is swapped for line-art hair (forehead
-   hairline + side-framing locks on the front, a fuller mass on the back), drawn in the
-   same thin-band style as the rest of the silhouette.
+The illustration was generated *conditioned on the source map's silhouette* (so the pose
+matches), then the 52 paths were aligned onto it with a per-figure bbox→bbox affine, and
+`human_body` was anchored to the image corners so the SVG coordinate frame equals the
+image. All 52 ids are preserved (F7–F9). Full pipeline and reproduction scripts:
+[`tracing/raster/`](tracing/raster/README.md).
 
-Every stage reshapes geometry **inside existing paths only** — no id/title/class is
-renamed, added, or removed — so **all 52 ids and the registration are preserved** (F7–F9).
-An AI-generated female anatomy chart was used to calibrate the proportions and ships as
-the refinement reference.
+> The earlier warp-derived vector scaffold (`tracing/derive_female_scaffold.py`,
+> `tracing/TRACING.md`) is kept for reference but is **superseded** by the raster map.
 
-**Fidelity note:** the result is a clearly-female, fully-tappable *scaffold*, not a
-finished anatomical illustration — the muscle borders are still inherited from the source.
-For publication-grade art, hand-trace the named paths over the reference; see
-[`tracing/TRACING.md`](tracing/TRACING.md). Anything edited there must still pass:
+The hit-map invariants still hold:
 
 ```
-python tracing/validate_female_svg.py   # 52 ids · one line each · well-formed · renders
+python tracing/validate_female_svg.py   # 52 ids · one line each · well-formed
 ```
-
-A real anatomist/illustrator should vet the final artwork.
 
 ## 5. Known limitation
 

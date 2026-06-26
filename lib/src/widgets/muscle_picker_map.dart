@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:muscle_selector/muscle_selector.dart';
 import 'package:muscle_selector/src/widgets/muscle_painter.dart';
+import '../constant.dart';
 import '../size_controller.dart';
 
 class MusclePickerMap extends StatefulWidget {
@@ -112,16 +113,44 @@ class MusclePickerMapState extends State<MusclePickerMap> {
             if (entry.value.contains(muscle.id)) entry.key,
       };
 
+  /// When the resolved map has a companion illustration, the silhouette is an
+  /// invisible hit/highlight layer drawn over that image.
+  String? get _imageAsset => Maps.imageForMap(widget.resolvedMap);
+
   @override
   Widget build(BuildContext context) {
+    final image = _imageAsset;
     return Stack(
       children: [
-        for (var muscle in _muscleList) _buildStackItem(muscle),
+        if (image != null) _buildImageLayer(image),
+        for (var muscle in _muscleList) _buildStackItem(muscle, image != null),
       ],
     );
   }
 
-  Widget _buildStackItem(Muscle muscle) {
+  BoxConstraints get _mapConstraints => BoxConstraints(
+        maxWidth: mapSize?.width ?? 0,
+        maxHeight: mapSize?.height ?? 0,
+      );
+
+  Widget _buildImageLayer(String imageName) {
+    return Container(
+      width: widget.width ?? double.infinity,
+      height: widget.height ?? double.infinity,
+      constraints: _mapConstraints,
+      alignment: Alignment.center,
+      child: Image.asset(
+        '${Constants.ASSETS_PATH}/$imageName',
+        fit: BoxFit.fill,
+        width: mapSize?.width,
+        height: mapSize?.height,
+        // Degrade to the plain hit-map if the illustration can't be loaded.
+        errorBuilder: (context, error, stack) => const SizedBox.shrink(),
+      ),
+    );
+  }
+
+  Widget _buildStackItem(Muscle muscle, bool overlay) {
 
     final bool isSelectable = muscle.id != 'human_body' && !widget.isEditing!;
 
@@ -140,14 +169,12 @@ class MusclePickerMapState extends State<MusclePickerMap> {
           dotColor: widget.dotColor,
           selectedColor: widget.selectedColor,
           strokeColor: widget.strokeColor,
+          overlay: overlay,
         ),
         child: Container(
           width: widget.width ?? double.infinity,
           height: widget.height ?? double.infinity,
-          constraints: BoxConstraints(
-            maxWidth: mapSize?.width ?? 0,
-            maxHeight: mapSize?.height ?? 0,
-          ),
+          constraints: _mapConstraints,
           alignment: Alignment.center,
         ),
       ),
