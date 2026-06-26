@@ -76,7 +76,13 @@ the body — with the highlight carried by group key so it survives a gender swi
 | `isEditing` | `bool?` | when `true`, disables selection |
 | `initialSelectedGroups` | `List<String>?` | group keys to pre-select |
 | `initialSelectedMuscles` | `Set<Muscle>?` | muscles to pre-select |
-| `selectedColor` / `strokeColor` / `dotColor` | `Color?` | styling |
+| `selectedColor` | `Color?` | **highlight colour** — set from the app; tints the selected muscle |
+| `overlayOpacity` | `double` | highlight strength on the illustrated maps (0–1, default `0.45`) |
+| `strokeColor` / `dotColor` | `Color?` | outline styling (plain vector maps only) |
+
+> The built-in male/female maps are illustrations with the muscles overlaid as an
+> invisible hit layer, so only `selectedColor` (+ `overlayOpacity`) affect their look;
+> `strokeColor`/`dotColor` apply to plain vector maps you pass via `map:`.
 
 > Provide **either** `gender` or `map` (asserted at construction).
 

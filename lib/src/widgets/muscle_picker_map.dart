@@ -11,8 +11,15 @@ class MusclePickerMap extends StatefulWidget {
   final Gender? gender;
   final Function(Set<Muscle> muscles) onChanged;
   final Color? strokeColor;
+
+  /// Colour used to highlight a selected muscle. On the illustrated (image)
+  /// maps it is drawn as a translucent tint over the muscle; on plain vector
+  /// maps it fills the muscle. Set this from the app to theme the highlight.
   final Color? selectedColor;
   final Color? dotColor;
+
+  /// Strength of the highlight tint on the illustrated maps (0–1, default 0.45).
+  final double overlayOpacity;
   final bool? actAsToggle;
   final bool? isEditing;
   final Set<Muscle>? initialSelectedMuscles;
@@ -28,6 +35,7 @@ class MusclePickerMap extends StatefulWidget {
     this.strokeColor,
     this.selectedColor,
     this.dotColor,
+    this.overlayOpacity = 0.45,
     this.actAsToggle,
     this.isEditing = false,
     this.initialSelectedMuscles,
@@ -178,6 +186,7 @@ class MusclePickerMapState extends State<MusclePickerMap> {
           selectedColor: widget.selectedColor,
           strokeColor: widget.strokeColor,
           overlay: overlay,
+          overlayOpacity: widget.overlayOpacity,
         ),
         // In overlay mode the canvas is exactly mapSize (so the painter's scale
         // is 1 and paths sit in image-pixel space); otherwise fill the widget.

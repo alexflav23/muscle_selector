@@ -13,6 +13,9 @@ class MusclePainter extends CustomPainter {
   /// invisible until selected, and a selection is drawn as a translucent tint.
   final bool overlay;
 
+  /// Strength of the selection tint in [overlay] mode (0 = invisible, 1 = solid).
+  final double overlayOpacity;
+
   final sizeController = SizeController.instance;
 
   double _scale = 1.0;
@@ -24,6 +27,7 @@ class MusclePainter extends CustomPainter {
     this.strokeColor,
     this.dotColor,
     this.overlay = false,
+    this.overlayOpacity = 0.45,
   });
 
   @override
@@ -41,7 +45,7 @@ class MusclePainter extends CustomPainter {
         canvas.drawPath(
           muscle.path,
           Paint()
-            ..color = (selectedColor ?? Colors.blue).withOpacity(0.45)
+            ..color = (selectedColor ?? Colors.blue).withOpacity(overlayOpacity)
             ..style = PaintingStyle.fill,
         );
       }
