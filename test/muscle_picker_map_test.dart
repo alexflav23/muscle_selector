@@ -144,7 +144,8 @@ void main() {
 
   testWidgets('the human_body silhouette is not selectable', (tester) async {
     // selectable chest underneath, human_body full-area on top -> tap hits the
-    // silhouette (topmost) but it must not select anything
+    // silhouette (topmost) but it must not select anything. A plain (non-image)
+    // map keeps this in vector mode where the silhouette is drawn on top.
     mockMuscleAssets(tester, male: svgOf([fullChest1, humanPath]));
     final key = GlobalKey<MusclePickerMapState>();
 
@@ -152,7 +153,7 @@ void main() {
       key: key,
       width: 200,
       height: 300,
-      gender: Gender.male,
+      map: 'plain_body.svg', // not in Maps.imageForMap -> vector mode
       onChanged: (_) {},
     )));
     await tester.pumpAndSettle();

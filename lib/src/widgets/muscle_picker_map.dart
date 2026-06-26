@@ -141,7 +141,10 @@ class MusclePickerMapState extends State<MusclePickerMap> {
                   errorBuilder: (context, error, stack) =>
                       const SizedBox.shrink(),
                 ),
-                for (var muscle in _muscleList) _buildStackItem(muscle, true),
+                // Skip human_body: it only exists to anchor the coordinate frame
+                // to the image (its rect spans the whole map) and must not eat taps.
+                for (var muscle in _muscleList)
+                  if (muscle.id != 'human_body') _buildStackItem(muscle, true),
               ],
             ),
           ),

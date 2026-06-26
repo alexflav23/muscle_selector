@@ -68,8 +68,10 @@ for m in el.finditer(src):
     attrs = ' '.join(m.group(1).split())
     pid = re.search(r'id="([^"]*)"', attrs).group(1)
     d = Path(*[wseg(s) for s in parse_path(m.group(2))]).d()
-    if pid == 'human_body':                       # anchor to image corners
-        d = f'M 0,0 M {W},{H} ' + d                # -> SizeController frame == image
+    if pid == 'human_body':                       # anchor the frame to the image
+        d = f'M 0,0 L {W},0 L {W},{H} L 0,{H} Z ' + d   # a real rect (moveTo is
+        # ignored by getBounds) so mapSize == the image; the widget skips drawing
+        # / hit-testing human_body in overlay mode.
     out.append((attrs, d))
 
 lines = ['<?xml version="1.0" encoding="UTF-8" standalone="no"?>',
