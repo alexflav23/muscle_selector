@@ -20,7 +20,7 @@ SVG = ('assets/maps/human_body_female.svg' if GENDER == 'female'
 
 # tuned against the 2304x1856 illustrations (Lx/Rx = each lower-leg centre)
 PARAMS = {
-    'female': dict(Lx=1535, Rx=1908, sep=18, ytop=1232, h=262, wo=38, wi=44, drop=8),
+    'female': dict(Lx=1618, Rx=1868, sep=8, ytop=1260, h=250, wo=44, wi=48, drop=6),
     'male':   dict(Lx=1500, Rx=1842, sep=8, ytop=1338, h=215, wo=43, wi=47, drop=6),
 }[GENDER]
 
