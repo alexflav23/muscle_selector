@@ -41,3 +41,11 @@ translucent tint — so small mismatches are invisible.
 
 `python tracing/validate_female_svg.py` → 52 ids · one line each · well-formed.
 The PNG must stay 1:1 with the SVG `viewBox` (`align_hitmap.py` guarantees this).
+
+## Lean female re-do
+
+The first illustration came out too muscular. A leaner, properly-proportioned
+female was regenerated (silhouette-conditioned, 'slender / low muscle' prompt) and
+the existing hit-map was **refit** onto it with `refit_to_image.py` (per-figure
+bbox->bbox of the body), then the shoulders were narrowed and the calves re-tuned
+(`calf_shapes.py`). The PNG is that lean illustration.
