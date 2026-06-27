@@ -31,6 +31,9 @@ This gives a premium illustrated look while keeping every muscle tappable.
    female neck (was on the chin) and deltoids (were inboard) onto the muscle.
    Run once, after the steps above.
 
+7. **Slim the female** — `python tracing/raster/slim_female.py 0.80` squeezes the
+   female figure (and its hit-paths) horizontally so it isn't too thick/muscular.
+
 The hit-map only needs to *approximately* cover each muscle — the highlight is a
 translucent tint — so small mismatches are invisible.
 
