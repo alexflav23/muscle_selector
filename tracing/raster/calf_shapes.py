@@ -21,7 +21,7 @@ SVG = ('assets/maps/human_body_female.svg' if GENDER == 'female'
 # tuned against the 2304x1856 illustrations (Lx/Rx = each lower-leg centre)
 PARAMS = {
     'female': dict(Lx=1535, Rx=1908, sep=18, ytop=1232, h=262, wo=38, wi=44, drop=8),
-    'male':   dict(Lx=1500, Rx=1900, sep=24, ytop=1335, h=250, wo=46, wi=52, drop=10),
+    'male':   dict(Lx=1528, Rx=1787, sep=12, ytop=1342, h=205, wo=36, wi=40, drop=6),
 }[GENDER]
 
 def calf(cx, ytop, w, h):
