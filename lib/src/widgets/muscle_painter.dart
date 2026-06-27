@@ -16,6 +16,10 @@ class MusclePainter extends CustomPainter {
   /// Strength of the selection tint in [overlay] mode (0 = invisible, 1 = solid).
   final double overlayOpacity;
 
+  /// Optional gradient for the highlight (takes precedence over [selectedColor]).
+  /// Spanned across the whole map so it stays coherent across muscles.
+  final Gradient? selectedGradient;
+
   final sizeController = SizeController.instance;
 
   double _scale = 1.0;
@@ -28,6 +32,7 @@ class MusclePainter extends CustomPainter {
     this.dotColor,
     this.overlay = false,
     this.overlayOpacity = 0.45,
+    this.selectedGradient,
   });
 
   @override
@@ -42,12 +47,15 @@ class MusclePainter extends CustomPainter {
       // The illustration carries the muscle outlines; only tint a selection.
       if (muscle.id == 'human_body') return;
       if (isSelected) {
-        canvas.drawPath(
-          muscle.path,
-          Paint()
-            ..color = (selectedColor ?? Colors.blue).withOpacity(overlayOpacity)
-            ..style = PaintingStyle.fill,
-        );
+        final paint = Paint()..style = PaintingStyle.fill;
+        if (selectedGradient != null) {
+          // Span the gradient over the whole map so every muscle samples one
+          // coherent gradient rather than repeating it per muscle.
+          paint.shader = selectedGradient!.createShader(Offset.zero & size);
+        } else {
+          paint.color = (selectedColor ?? Colors.blue).withOpacity(overlayOpacity);
+        }
+        canvas.drawPath(muscle.path, paint);
       }
       return;
     }

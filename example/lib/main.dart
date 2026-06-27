@@ -30,6 +30,28 @@ class _HomeViewState extends State<HomeView> {
   // survives a gender switch (re-seeded via initialSelectedGroups on reload).
   Set<String> _groups = {'chest', 'glutes', 'neck', 'lower_back'};
 
+  // Highlight styles the user can switch between: flat colours and premium
+  // gradients. The map takes either a `selectedColor` or a `selectedGradient`.
+  int _styleIndex = 0;
+  static const _begin = Alignment.topCenter, _end = Alignment.bottomCenter;
+  final List<HighlightStyle> _styles = [
+    HighlightStyle.solid('Blue', Colors.lightBlueAccent),
+    HighlightStyle.solid('Green', const Color(0xFF34D399)),
+    HighlightStyle.solid('Pink', Colors.pinkAccent),
+    HighlightStyle.gradient('Sunset', const LinearGradient(
+        begin: _begin, end: _end,
+        colors: [Color(0xCCFF7A45), Color(0xCCFF2D78)])),
+    HighlightStyle.gradient('Ocean', const LinearGradient(
+        begin: _begin, end: _end,
+        colors: [Color(0xCC22D3EE), Color(0xCC3B82F6)])),
+    HighlightStyle.gradient('Neon', const LinearGradient(
+        begin: Alignment.topLeft, end: Alignment.bottomRight,
+        colors: [Color(0xCCA855F7), Color(0xCC2563EB)])),
+    HighlightStyle.gradient('Lime', const LinearGradient(
+        begin: _begin, end: _end,
+        colors: [Color(0xCC2DD4BF), Color(0xD9A3E635)])),
+  ];
+
   // Pretty labels for the group keys from Parser.muscleGroups.
   static const _labels = {
     'harmstrings': 'Hamstrings',
@@ -102,7 +124,11 @@ class _HomeViewState extends State<HomeView> {
                     initialSelectedGroups: _groups.toList(),
                     actAsToggle: true,
                     dotColor: Colors.black,
-                    selectedColor: Colors.lightBlueAccent,
+                    // Highlight styling chosen from the picker below — proves the
+                    // colour and gradient are fully controllable from the app.
+                    selectedColor: _styles[_styleIndex].color,
+                    selectedGradient: _styles[_styleIndex].gradient,
+                    overlayOpacity: 0.5,
                     strokeColor: Colors.black54,
                     onChanged: (muscles) =>
                         setState(() => _groups = _groupKeysFor(muscles)),
@@ -110,6 +136,11 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ),
             ),
+          ),
+          _StylePicker(
+            styles: _styles,
+            selectedIndex: _styleIndex,
+            onSelected: (i) => setState(() => _styleIndex = i),
           ),
           _GroupPanel(
             allGroups: allGroups,
@@ -122,6 +153,81 @@ class _HomeViewState extends State<HomeView> {
             },
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// A highlight option: either a flat [color] or a [gradient] (premium look).
+class HighlightStyle {
+  final String name;
+  final Color? color;
+  final Gradient? gradient;
+  const HighlightStyle.solid(this.name, Color this.color) : gradient = null;
+  const HighlightStyle.gradient(this.name, Gradient this.gradient)
+      : color = null;
+
+  /// A fully-opaque preview decoration for the swatch (the live highlight is
+  /// translucent so the muscle shows through).
+  BoxDecoration get swatch => BoxDecoration(
+        shape: BoxShape.circle,
+        color: color,
+        gradient: gradient,
+      );
+}
+
+/// Horizontal picker of highlight colours and gradients.
+class _StylePicker extends StatelessWidget {
+  final List<HighlightStyle> styles;
+  final int selectedIndex;
+  final ValueChanged<int> onSelected;
+
+  const _StylePicker({
+    required this.styles,
+    required this.selectedIndex,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 84,
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      color: Theme.of(context).colorScheme.surface,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: styles.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 14),
+        itemBuilder: (context, i) {
+          final style = styles[i];
+          final isSelected = i == selectedIndex;
+          return GestureDetector(
+            onTap: () => onSelected(i),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: style.swatch.copyWith(
+                    border: Border.all(
+                      color: isSelected
+                          ? Theme.of(context).colorScheme.primary
+                          : Colors.black12,
+                      width: isSelected ? 3 : 1,
+                    ),
+                  ),
+                  child: isSelected
+                      ? const Icon(Icons.check, size: 20, color: Colors.white)
+                      : null,
+                ),
+                const SizedBox(height: 4),
+                Text(style.name, style: Theme.of(context).textTheme.labelSmall),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

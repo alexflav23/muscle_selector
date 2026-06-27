@@ -20,6 +20,10 @@ class MusclePickerMap extends StatefulWidget {
 
   /// Strength of the highlight tint on the illustrated maps (0–1, default 0.45).
   final double overlayOpacity;
+
+  /// Optional gradient for the highlight (overrides [selectedColor]). Bake the
+  /// alpha into the gradient's colours for a translucent, premium look.
+  final Gradient? selectedGradient;
   final bool? actAsToggle;
   final bool? isEditing;
   final Set<Muscle>? initialSelectedMuscles;
@@ -36,6 +40,7 @@ class MusclePickerMap extends StatefulWidget {
     this.selectedColor,
     this.dotColor,
     this.overlayOpacity = 0.45,
+    this.selectedGradient,
     this.actAsToggle,
     this.isEditing = false,
     this.initialSelectedMuscles,
@@ -187,6 +192,7 @@ class MusclePickerMapState extends State<MusclePickerMap> {
           strokeColor: widget.strokeColor,
           overlay: overlay,
           overlayOpacity: widget.overlayOpacity,
+          selectedGradient: widget.selectedGradient,
         ),
         // In overlay mode the canvas is exactly mapSize (so the painter's scale
         // is 1 and paths sit in image-pixel space); otherwise fill the widget.

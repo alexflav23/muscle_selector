@@ -77,6 +77,7 @@ the body — with the highlight carried by group key so it survives a gender swi
 | `initialSelectedGroups` | `List<String>?` | group keys to pre-select |
 | `initialSelectedMuscles` | `Set<Muscle>?` | muscles to pre-select |
 | `selectedColor` | `Color?` | **highlight colour** — set from the app; tints the selected muscle |
+| `selectedGradient` | `Gradient?` | highlight as a gradient (overrides `selectedColor`); spanned across the whole map so it stays coherent across muscles |
 | `overlayOpacity` | `double` | highlight strength on the illustrated maps (0–1, default `0.45`) |
 | `strokeColor` / `dotColor` | `Color?` | outline styling (plain vector maps only) |
 
