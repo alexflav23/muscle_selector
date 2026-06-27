@@ -19,6 +19,10 @@ This gives a premium illustrated look while keeping every muscle tappable.
    no smear), anchors `human_body` to the image corners so the coordinate frame equals
    the image, and writes `assets/maps/human_body_female.svg` + `.png`.
 
+4. **Seat the legs** — `python tracing/raster/leg_correct.py <gender>` nudges the
+   leg muscles down onto the illustration (the torso aligns from step 3, but the
+   AI draws thighs/calves slightly lower). Run it once, after `align_hitmap.py`.
+
 The hit-map only needs to *approximately* cover each muscle — the highlight is a
 translucent tint — so small mismatches are invisible.
 
