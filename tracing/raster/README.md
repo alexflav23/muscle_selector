@@ -27,6 +27,10 @@ This gives a premium illustrated look while keeping every muscle tappable.
    the scattered inherited calf paths for clean leaf shapes seated on each
    gastrocnemius. Run once, after `leg_correct.py`.
 
+6. **Female fixups** — `python tracing/raster/female_fixups.py` repositions the
+   female neck (was on the chin) and deltoids (were inboard) onto the muscle.
+   Run once, after the steps above.
+
 The hit-map only needs to *approximately* cover each muscle — the highlight is a
 translucent tint — so small mismatches are invisible.
 
