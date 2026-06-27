@@ -69,6 +69,32 @@ void main() {
     expect(key.currentState!.selectedMuscles, isEmpty);
   });
 
+  testWidgets('tap toggles selection on/off in overlay mode inside an '
+      'InteractiveViewer (the example setup)', (tester) async {
+    mockMuscleAssets(tester, male: svgOf([fullChest1, humanPath]));
+    final key = GlobalKey<MusclePickerMapState>();
+
+    await tester.pumpWidget(_host(InteractiveViewer(
+      child: MusclePickerMap(
+        key: key,
+        width: 200,
+        height: 300,
+        gender: Gender.male, // illustrated map -> overlay mode
+        actAsToggle: true,
+        onChanged: (_) {},
+      ),
+    )));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(GestureDetector).last, warnIfMissed: false);
+    await tester.pump();
+    expect(_selectedIds(key), <String>{'chest1', 'chest2'}); // selected
+
+    await tester.tap(find.byType(GestureDetector).last, warnIfMissed: false);
+    await tester.pump();
+    expect(key.currentState!.selectedMuscles, isEmpty); // toggled back off
+  });
+
   testWidgets('selectGroups / deselectGroups / selectedGroups drive highlighting',
       (tester) async {
     mockMuscleAssets(tester);
