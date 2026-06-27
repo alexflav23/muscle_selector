@@ -23,6 +23,10 @@ This gives a premium illustrated look while keeping every muscle tappable.
    leg muscles down onto the illustration (the torso aligns from step 3, but the
    AI draws thighs/calves slightly lower). Run it once, after `align_hitmap.py`.
 
+5. **Reshape the calves** — `python tracing/raster/calf_shapes.py <gender>` swaps
+   the scattered inherited calf paths for clean leaf shapes seated on each
+   gastrocnemius. Run once, after `leg_correct.py`.
+
 The hit-map only needs to *approximately* cover each muscle — the highlight is a
 translucent tint — so small mismatches are invisible.
 
